@@ -1,6 +1,9 @@
 import { Column, Entity, JoinColumn, OneToMany, OneToOne, PrimaryColumn, PrimaryGeneratedColumn } from "typeorm";
 import { Product } from "./product.entity";
 import { Profile } from "./profile.entity";
+import { IsOptional } from "class-validator";
+import { Role } from "src/enums/role.enum";
+import { Permission } from "src/enums/permission.enum";
 
 @Entity()
 export class User { 
@@ -21,6 +24,17 @@ export class User {
 
     @OneToOne(() => Profile, profile => profile.user , {cascade: true})
     profile: Profile
+
+    @Column({nullable: true})
+    role?: Role
+
+    @Column({ 
+        type: 'enum', 
+        enum: Permission, 
+        nullable: true,
+        array: true
+      })
+      permissions: Permission[] | null;
 
     
 }

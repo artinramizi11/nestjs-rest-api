@@ -3,6 +3,8 @@ import { ProfilesService } from './profiles.service';
 import { createProfileDto, createProfileSchema } from 'src/zodSchema/create-profile.schema';
 import { ZodValidationPipe } from 'src/zodValidation/zodValidation';
 import { AuthGuard } from 'src/guards/auth.guard';
+import { authorizationGuard } from 'src/guards/authorization.guard';
+import { Roles } from 'src/auth/roles';
 
 @Controller('profiles')
 export class ProfilesController {
@@ -24,14 +26,14 @@ export class ProfilesController {
 
     // create new profile
     @Post()
-    @UseGuards(AuthGuard)
+    @UseGuards(AuthGuard,authorizationGuard)
     createProfile(@Body(new ZodValidationPipe(createProfileSchema)) body: createProfileDto) {
         return this.profileService.createProfile(body)
     }
 
     // delete profile from user id
     @Delete("/users/:userId/")
-    @UseGuards(AuthGuard)
+    @UseGuards(AuthGuard,authorizationGuard)
     deleteProfile(@Param("userId", ParseIntPipe) userId: number){
         return this.profileService.removeProfileByUserId(userId)
     }
