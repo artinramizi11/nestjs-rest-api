@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from 'src/entities/user.entity';
 import { CreateUserDto } from 'src/zodSchema/create-user.schema';
@@ -56,6 +56,19 @@ export class UsersService {
         Object.assign(user,updatedInfo )
         await this.usersRepository.save(user)
         return {message: "Sucessfully updated the new user", user}
+
+    }
+
+    async validateUser(email: string,password: string){
+        const user = await this.usersRepository.findOne({where: {email}})
+
+        if(user) {
+            const validatePassword = user?.password === password
+            if(validatePassword) {
+                return user 
+            }
+        }
+        throw new HttpException("No user found with these credentials",HttpStatus.NOT_FOUND) 
 
     }
 }

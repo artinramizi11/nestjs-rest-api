@@ -37,8 +37,5 @@ export class ProfilesController {
     deleteProfile(@Param("userId", ParseIntPipe) userId: number){
         return this.profileService.removeProfileByUserId(userId)
     }
-
-   
-
 }
  

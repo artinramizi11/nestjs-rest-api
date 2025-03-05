@@ -1,7 +1,5 @@
 import { CanActivate, ExecutionContext, HttpException, HttpStatus, Injectable, UnauthorizedException } from "@nestjs/common";
 import { Reflector } from "@nestjs/core";
-import { Observable } from "rxjs";
-import { RolesPermissions } from "src/auth/permissions-map";
 import { Roles, roles_key } from "src/auth/roles";
 import { UsersService } from "src/users/users.service";
 
@@ -18,6 +16,7 @@ export class authorizationGuard implements CanActivate {
             context.getHandler(),
             context.getClass()
         ])
+        console.log(requiredRoles)
           const request = context.switchToHttp().getRequest()
         const userId = request.user?.sub;
         const user = await this.usersService.findUserById(userId)

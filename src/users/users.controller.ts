@@ -7,11 +7,9 @@ import { AuthGuard } from 'src/guards/auth.guard';
 import { Roles } from 'src/auth/roles';
 import { authorizationGuard } from 'src/guards/authorization.guard';
 import { Role } from 'src/enums/role.enum';
-import { Permissions } from 'src/auth/permissions';
-import { Permission } from 'src/enums/permission.enum';
-import { PermissionGuard } from 'src/guards/permission.guard';
-import { RolesPermissions } from 'src/auth/permissions-map';
 
+@Roles(Role.Admin)
+@UseGuards(AuthGuard,authorizationGuard)
 @Controller('users')
 export class UsersController {
     constructor(
@@ -20,16 +18,11 @@ export class UsersController {
 
     // get all users
     @Get()
-    @Roles(Role.Admin)
-    @Permissions(Permission.Read)
-    @UseGuards(AuthGuard,authorizationGuard,PermissionGuard)
     getUsers(){
         return this.usersService.getAllUsers()
     }
 
     // create new user
-    @Roles(Role.Admin)
-    @UseGuards(AuthGuard,authorizationGuard)
     @Post()
     createUser(@Body(new ZodValidationPipe(createUserSchema)) body: CreateUserDto) {
         return this.usersService.createUser(body)
@@ -44,17 +37,12 @@ export class UsersController {
 
     // delete user by id
     @Delete(":id")
-    @Roles(Role.Admin)
-    @UseGuards(AuthGuard,authorizationGuard)
-    @UseGuards(AuthGuard)
     deleteUser(@Param("id",ParseIntPipe) id: number){
         return this.usersService.removeUser(id)
     }
 
     // update user by id
     @Patch(':id')
-    @Roles(Role.Admin)
-    @UseGuards(AuthGuard,authorizationGuard)
     updateUser(@Param("id",ParseIntPipe) id: number, @Body(new ZodValidationPipe(createUserSchema)) body: CreateUserDto){
         return this.usersService.updateUser(id,body)
     }

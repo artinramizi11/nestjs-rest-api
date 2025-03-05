@@ -12,6 +12,8 @@ import { ProfilesModule } from './profiles/profiles.module';
 import { AuthModule } from './auth/auth.module';
 import { JwtModule } from '@nestjs/jwt';
 import * as dotenv from "dotenv"
+import { UsersService } from './users/users.service';
+import { LocalStrategy } from './strategies/local.strategy';
 dotenv.config()
 
 @Module({
@@ -30,7 +32,7 @@ dotenv.config()
     })
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [AppService,LocalStrategy,UsersService],
 })
 export class AppModule {}
 
