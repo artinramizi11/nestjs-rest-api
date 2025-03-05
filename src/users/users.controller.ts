@@ -8,6 +8,9 @@ import { Roles } from 'src/auth/roles';
 import { authorizationGuard } from 'src/guards/authorization.guard';
 import { Role } from 'src/enums/role.enum';
 
+
+// This controller is protected by an authentication guard that verifies JWT tokens.  
+// Once the JWT token is validated, the authorizationGuard checks if the user role includes the Role.Admin to acess the route
 @Roles(Role.Admin)
 @UseGuards(AuthGuard,authorizationGuard)
 @Controller('users')

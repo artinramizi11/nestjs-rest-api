@@ -19,7 +19,7 @@ export class AuthController {
         return this.authService.signIn(body)
     }
 
-    // Get access to your profile by using your token 
+    // Get access to your profile by using token
     @Get("profile")
     @UseGuards(AuthGuard)
     getProfile(@Req() request){

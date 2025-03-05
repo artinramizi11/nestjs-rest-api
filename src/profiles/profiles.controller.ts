@@ -26,14 +26,14 @@ export class ProfilesController {
 
     // create new profile
     @Post()
-    @UseGuards(AuthGuard,authorizationGuard)
+    @UseGuards(AuthGuard)
     createProfile(@Body(new ZodValidationPipe(createProfileSchema)) body: createProfileDto) {
         return this.profileService.createProfile(body)
     }
 
     // delete profile from user id
     @Delete("/users/:userId/")
-    @UseGuards(AuthGuard,authorizationGuard)
+    @UseGuards(AuthGuard)
     deleteProfile(@Param("userId", ParseIntPipe) userId: number){
         return this.profileService.removeProfileByUserId(userId)
     }
