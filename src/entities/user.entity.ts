@@ -1,9 +1,7 @@
-import { Column, Entity, JoinColumn, OneToMany, OneToOne, PrimaryColumn, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, OneToMany, OneToOne, PrimaryGeneratedColumn } from "typeorm";
 import { Product } from "./product.entity";
 import { Profile } from "./profile.entity";
-import { IsOptional } from "class-validator";
 import { Role } from "src/enums/role.enum";
-import { Permission } from "src/enums/permission.enum";
 
 @Entity()
 export class User { 
@@ -25,16 +23,7 @@ export class User {
     @OneToOne(() => Profile, profile => profile.user , {cascade: true})
     profile: Profile
 
-    @Column({nullable: true})
+    @Column({type: "enum",enum: Role,default: Role.User})
     role?: Role
-
-    @Column({ 
-        type: 'enum', 
-        enum: Permission, 
-        nullable: true,
-        array: true
-      })
-      permissions: Permission[] | null;
-
     
 }

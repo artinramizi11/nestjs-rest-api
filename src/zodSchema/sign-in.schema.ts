@@ -5,4 +5,6 @@ export const signInSchema = z.object({
     password: z.string()
 }).required()
 
+
+// We create a dto type from zod schema
 export type signInDto = z.infer<typeof signInSchema>

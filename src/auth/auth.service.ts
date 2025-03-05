@@ -22,7 +22,7 @@ export class AuthService {
         if(userExists?.password !== user.password) {
             throw new UnauthorizedException()
         }
-        const token = await this.jwtService.signAsync({sub: userExists.id,email: userExists.email}, {secret: process.env.SECRET_KEY})
+        const token = await this.jwtService.signAsync({sub: userExists.id,email: userExists.email,role: userExists.role}, {secret: process.env.SECRET_KEY})
         return {message: "You logged in sucessfully",token}
     }
    

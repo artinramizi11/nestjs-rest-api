@@ -7,6 +7,7 @@ import { Repository } from 'typeorm';
 @Injectable()
 export class UsersService {
     constructor(
+        // We need to import the repository from database so we can work with it
         @InjectRepository(User) private usersRepository: Repository<User>
     ){}
 

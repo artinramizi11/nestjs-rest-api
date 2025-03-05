@@ -1,8 +1,11 @@
-import { Body, Controller, Delete, Get, Param, ParseIntPipe, Post, UseGuards, ValidationPipe } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, ParseIntPipe, Patch, Post, UseGuards, ValidationPipe } from '@nestjs/common';
 import { ProductsService } from './products.service';
 import { createProductDto, createProductSchema } from 'src/zodSchema/create-product.schema';
 import { ZodValidationPipe } from 'src/zodValidation/zodValidation';
 import { AuthGuard } from 'src/guards/auth.guard';
+import { UpdateProductDto, updateProductSchema } from 'src/zodSchema/update-product.schema';
+import { ProductOwnerGuard } from 'src/guards/productowner.guard';
+import { JwtAuthGuard } from 'src/guards/jwt-auth.guard';
 
 @Controller('products')
 export class ProductsController {
@@ -28,5 +31,12 @@ export class ProductsController {
         @Param("productId",ParseIntPipe) productId: number, @Param("userId", ParseIntPipe) userId: number
     ) {
         return this.productsService.removeProduct(productId)
+    }
+
+    @Patch(":id")
+    @UseGuards(JwtAuthGuard,ProductOwnerGuard)
+    updateProduct(@Param("id") id: number, @Body(new ZodValidationPipe(updateProductSchema)) updateProduct: UpdateProductDto){
+        return this.productsService.updateProduct(updateProduct)
+
     }
 }

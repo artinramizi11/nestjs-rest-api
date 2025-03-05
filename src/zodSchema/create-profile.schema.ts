@@ -9,4 +9,5 @@ export const createProfileSchema = z.object({
     userId: z.number()
 })
 
+// We create a dto type from zod schema
 export type createProfileDto = z.infer<typeof createProfileSchema>

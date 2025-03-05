@@ -16,14 +16,19 @@ export class authorizationGuard implements CanActivate {
             context.getHandler(),
             context.getClass()
         ])
-        console.log(requiredRoles)
+
           const request = context.switchToHttp().getRequest()
         const userId = request.user?.sub;
         const user = await this.usersService.findUserById(userId)
+
+
+        if(user.role === 'super-admin') {
+            return true
+        }
         const hasAllRoles = requiredRoles.every(role => user.role?.includes(role))
 
         if(!hasAllRoles){
-            throw new HttpException("Unauthorized for this action",HttpStatus.UNAUTHORIZED)
+            throw new HttpException("No permission to do this action",HttpStatus.UNAUTHORIZED)
         }
         return hasAllRoles
      

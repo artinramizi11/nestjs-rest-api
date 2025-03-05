@@ -2,8 +2,8 @@ import { Body, Controller, Get, Post, Req, UseGuards } from '@nestjs/common';
 import { signInDto, signInSchema } from 'src/zodSchema/sign-in.schema';
 import { ZodValidationPipe } from 'src/zodValidation/zodValidation';
 import { AuthService } from './auth.service';
-import { AuthGuard } from 'src/guards/auth.guard';
 import { UsersService } from 'src/users/users.service';
+import { AuthGuard } from '@nestjs/passport';
 
 @Controller('auth')
 export class AuthController {
@@ -21,7 +21,7 @@ export class AuthController {
 
     // Get access to your profile by using token
     @Get("profile")
-    @UseGuards(AuthGuard)
+    @UseGuards(AuthGuard('jwt'))
     getProfile(@Req() request){
         return this.usersService.findUserById(request.user.sub)
     }

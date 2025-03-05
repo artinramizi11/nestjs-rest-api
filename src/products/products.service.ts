@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Product } from 'src/entities/product.entity';
 import { User } from 'src/entities/user.entity';
@@ -48,6 +48,24 @@ export class ProductsService {
         return {message: "sucessfully removed the product"}
     
     }
+
+    async updateProduct(updated) {
+        const product = await this.productRepository.findOne({where: {user: {id: updated.userId}}})
+        if(!product){
+            throw new HttpException("You dont have any product on this user id", HttpStatus.NOT_FOUND)
+        }
+        Object.assign(product,updated)
+        return product
+    }
+
+    async getProductById(id: number){
+        const product = await this.productRepository.findOne({where: {id},relations: ['user']})
+        if(!product){
+            throw new HttpException("No product found with this id",HttpStatus.NOT_FOUND)
+        }
+        return product
+    }
+
        
 
 }

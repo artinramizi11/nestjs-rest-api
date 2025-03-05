@@ -14,12 +14,18 @@ import { JwtModule } from '@nestjs/jwt';
 import * as dotenv from "dotenv"
 import { UsersService } from './users/users.service';
 import { LocalStrategy } from './strategies/local.strategy';
+import { ConfigModule } from '@nestjs/config';
+import configuration from './config/configuration';
 dotenv.config()
 
 @Module({
   imports: [
     TypeOrmModule.forRoot(connectDb),
     TypeOrmModule.forFeature([User, Product, Profile]),
+    ConfigModule.forRoot({
+      isGlobal: true,
+      load: [configuration]
+    }),
     UsersModule,
     ProductsModule,
     ProfilesModule,

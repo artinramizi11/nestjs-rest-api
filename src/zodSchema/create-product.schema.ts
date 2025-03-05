@@ -8,4 +8,5 @@ export const createProductSchema = z.object({
     userId: z.number()
 })
 
+// We create a dto type from zod schema
 export type createProductDto = z.infer<typeof createProductSchema>
