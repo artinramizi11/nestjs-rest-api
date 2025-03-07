@@ -6,6 +6,9 @@ import { ZodValidationPipe } from 'src/zodValidation/zodValidation';
 import { JwtAuthGuard } from 'src/guards/jwt-auth.guard';
 import { OwnerShip } from 'src/auth/ownership.metadata';
 import { OwnerShipGuard } from 'src/guards/ownership.guard';
+import { Roles } from 'src/auth/roles';
+import { Role } from 'src/enums/role.enum';
+import { authorizationGuard } from 'src/guards/authorization.guard';
 
 
 // This controller is protected by an authentication guard that verifies JWT tokens.  
@@ -32,6 +35,8 @@ export class UsersController {
 
     // create new user
     @Post()
+    @Roles(Role.Admin)
+    @UseGuards(authorizationGuard)
     createUser(@Body(new ZodValidationPipe(createUserSchema)) body: CreateUserDto) {
         return this.usersService.createUser(body)
     }
