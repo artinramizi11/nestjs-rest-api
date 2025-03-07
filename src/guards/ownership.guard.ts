@@ -17,10 +17,11 @@ export class OwnerShipGuard implements CanActivate {
 
     // When user try to get information by using users/:id param
        const isOwner = Number(ownerUserId) === user.sub
+       console.log(isOwner)
        const hasSuperAdmin = user.role === 'super-admin'
 
     //    When user try to create profile for his user 
-       const ownProfile = request.body.userId === user.sub
+       const ownProfile = request.body?.userId === user.sub
 
        if(ownProfile){
         return true 

@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, Param, ParseIntPipe, Patch, Post, UseGuards } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, ParseIntPipe, Patch, Post, SetMetadata, UseGuards } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { User } from 'src/entities/user.entity';
 import { CreateUserDto, createUserSchema } from 'src/zodSchema/create-user.schema';
@@ -23,13 +23,20 @@ export class UsersController {
         return this.usersService.getAllUsers()
     }
 
+    // Just a demo where we can use metadata so we dont need to access authorization where the logic is on auth guard
+    @Get("demo-users")
+    @SetMetadata("public",true)
+    getDemoUsers(){
+        return {users: [{id: 1,user: "jonathan",age: 20},{id: 2,user: "emily",age: 30},{id: 3,user: "john",age: 26}]}
+    }
+
     // create new user
     @Post()
     createUser(@Body(new ZodValidationPipe(createUserSchema)) body: CreateUserDto) {
         return this.usersService.createUser(body)
     }
 
-    // get user by id
+    // Only the owner of user's can access to their own user
     @Get(":id")
     @OwnerShip("id")
     @UseGuards(OwnerShipGuard)
@@ -38,7 +45,7 @@ export class UsersController {
 
     }
 
-    // delete user by id
+    // delete user by id , only the owners can remove their own user
     @Delete(":id") 
     @OwnerShip("id")
     @UseGuards(OwnerShipGuard)
@@ -46,7 +53,7 @@ export class UsersController {
         return this.usersService.removeUser(id)
     }
 
-    // update user by id
+    // update user by id, only the owners can update their own user
     @Patch(':id')
     @OwnerShip("id")
     @UseGuards(OwnerShipGuard)

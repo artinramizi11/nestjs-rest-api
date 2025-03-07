@@ -25,12 +25,11 @@ export class ProductsController {
     }
 
     // Delete product from user's id
-    @Delete("/:productId/users/:userId")
-    @UseGuards(AuthGuard)
+    @Delete(":id")
+    @UseGuards(AuthGuard,ProductOwnerGuard)
     deleteProduct(
-        @Param("productId",ParseIntPipe) productId: number, @Param("userId", ParseIntPipe) userId: number
-    ) {
-        return this.productsService.removeProduct(productId)
+        @Param("id",ParseIntPipe) id: number) {
+        return this.productsService.removeProduct(id)
     }
 
     @Patch(":id")

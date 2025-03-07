@@ -9,16 +9,20 @@ export class ProductOwnerGuard implements CanActivate {
     async canActivate(context: ExecutionContext){
         const request = context.switchToHttp().getRequest()
         const user = request.user
-        const productId = Number(request.params.id)
+        const productId = request.params?.id
 
-        const product = await this.productService.getProductById(productId)
+        const product = await this.productService.getProductById(Number(productId))
 
-        const ownsProduct = user.sub === product.user.id 
+        if(product) {
+            const ownsProduct = product.user.id === user.sub  
 
-        if(ownsProduct){
-            return true 
+            if(ownsProduct) {
+                return true
+            }
+
         }
 
-        throw new HttpException("You dont own this product to update", HttpStatus.UNAUTHORIZED)
+
+        throw new HttpException("You dont have permission for this action", HttpStatus.UNAUTHORIZED)
      }
 }

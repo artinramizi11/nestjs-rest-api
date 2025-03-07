@@ -33,14 +33,9 @@ export class ProductsService {
        return {message: "Sucessfully added a new product"} 
     }
 
-    // Remove product from the user id
-    async removeProduct(userId: number): Promise<User | {message: string}> {
-
-        const user = await this.usersService.findUserById(userId);
-        if(!user) {
-            return {message: "No user found with that id"}
-        }
-        const product = await this.productRepository.findOne({where: {user: {id: userId}}})
+    // Remove product by id - is secured by the product ownership guard
+    async removeProduct(id: number): Promise<Product | {message: string}> {
+        const product = await this.productRepository.findOne({where: {id}})
         if(!product) {
             throw new NotFoundException()
         }
