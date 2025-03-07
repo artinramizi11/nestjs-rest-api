@@ -2,7 +2,6 @@ import { Body, Controller, Delete, Get, Param, ParseIntPipe, Patch, Post, UseGua
 import { ProductsService } from './products.service';
 import { createProductDto, createProductSchema } from 'src/zodSchema/create-product.schema';
 import { ZodValidationPipe } from 'src/zodValidation/zodValidation';
-import { AuthGuard } from 'src/guards/auth.guard';
 import { UpdateProductDto, updateProductSchema } from 'src/zodSchema/update-product.schema';
 import { ProductOwnerGuard } from 'src/guards/productowner.guard';
 import { JwtAuthGuard } from 'src/guards/jwt-auth.guard';
@@ -19,14 +18,14 @@ export class ProductsController {
 
     // Create new product for the user id
     @Post()
-    @UseGuards(AuthGuard)
+    @UseGuards(JwtAuthGuard)
     createProduct(@Body(new ZodValidationPipe(createProductSchema)) body: createProductDto){
         return this.productsService.addProduct(body)
     }
 
     // Delete product from user's id
     @Delete(":id")
-    @UseGuards(AuthGuard,ProductOwnerGuard)
+    @UseGuards(JwtAuthGuard,ProductOwnerGuard)
     deleteProduct(
         @Param("id",ParseIntPipe) id: number) {
         return this.productsService.removeProduct(id)

@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { Module} from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
@@ -41,5 +41,6 @@ dotenv.config()
   providers: [AppService,LocalStrategy,UsersService],
 })
 export class AppModule {}
+
 
 

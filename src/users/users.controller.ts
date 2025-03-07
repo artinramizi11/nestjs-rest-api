@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, Param, ParseIntPipe, Patch, Post, SetMetadata, UseGuards } from '@nestjs/common';
+import { Body, Controller, Delete, Get , Param, ParseIntPipe, Patch, Post, SetMetadata, UploadedFile, UseGuards, UseInterceptors } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { User } from 'src/entities/user.entity';
 import { CreateUserDto, createUserSchema } from 'src/zodSchema/create-user.schema';
@@ -9,6 +9,11 @@ import { OwnerShipGuard } from 'src/guards/ownership.guard';
 import { Roles } from 'src/auth/roles';
 import { Role } from 'src/enums/role.enum';
 import { authorizationGuard } from 'src/guards/authorization.guard';
+import { FileInterceptor } from '@nestjs/platform-express';
+import { multerConfig } from 'src/config/multerconfig';
+import { Repository } from 'typeorm';
+import { InjectRepository } from '@nestjs/typeorm';
+import { UserOwner } from 'src/guards/user-owner.guard';
 
 
 // This controller is protected by an authentication guard that verifies JWT tokens.  
@@ -17,13 +22,27 @@ import { authorizationGuard } from 'src/guards/authorization.guard';
 @Controller('users')
 export class UsersController {
     constructor(
-        private usersService: UsersService
+        private usersService: UsersService,
+        @InjectRepository(User) private usersRepository: Repository<User>
     ){}
 
     // get all users
     @Get()
     getUsers(){
         return this.usersService.getAllUsers()
+    }
+
+    @Get(":id/:imageName")
+    @SetMetadata("public",true)
+    getUserImage(@Param() {id,imageName}: {id: string,imageName: string} ){
+        return {id,imageName}
+    }
+
+    @Post(":id/image")
+    @UseGuards(UserOwner)
+    @UseInterceptors(FileInterceptor("image", multerConfig))
+      async uploadUserImage(@UploadedFile() file: Express.Multer.File, @Param("id") id: number){
+        return this.usersService.uploadUserImage(id,file)
     }
 
     // Just a demo where we can use metadata so we dont need to access authorization where the logic is on auth guard

@@ -30,10 +30,10 @@ export class UsersService {
     }
 
     // find user in db
-    async findUserById(id: number): Promise<User> {
+    async findUserById(id: number): Promise<User | any> {
         const user = await this.usersRepository.findOne({where: {id} , relations: ['products','profile']})
         if(!user) {
-            throw new NotFoundException()
+            throw new NotFoundException("No user found with this id")
         }
         return user
     }
@@ -71,5 +71,22 @@ export class UsersService {
         }
         throw new HttpException("No user found with these credentials",HttpStatus.NOT_FOUND) 
 
+    }
+
+    async uploadUserImage(userId: number, file: Express.Multer.File){
+        const user = await this.findUserById(userId)
+ const imageurl = file?.originalname;
+
+            if(!file) {
+                throw new HttpException("You need to provide a file first",HttpStatus.BAD_REQUEST)
+            }
+
+          if(user){
+            user.imageurl = imageurl
+            await this.usersRepository.save(user)
+            return {message: "Sucessfully uploaded the image for the user"}
+          }
+
+          throw new HttpException("Image upload failed", HttpStatus.BAD_REQUEST) 
     }
 }

@@ -17,6 +17,9 @@ export class User {
     @Column()
     username: string
 
+    @Column({nullable: true})
+    imageurl: string
+
     @OneToMany(() => Product, product => product.user , {cascade: true})
     products: Product[]
 
