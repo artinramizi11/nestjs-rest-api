@@ -2,6 +2,7 @@ import { HttpException, HttpStatus, Injectable, NotFoundException } from '@nestj
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from 'src/entities/user.entity';
 import { CreateUserDto } from 'src/zodSchema/create-user.schema';
+import { PaginationDto } from 'src/zodSchema/pagination.schema';
 import { Repository } from 'typeorm';
 
 @Injectable()
@@ -12,8 +13,8 @@ export class UsersService {
     ){}
 
     // get all users from db
-    async getAllUsers(): Promise<User[]> {
-        return await this.usersRepository.find({relations: ['profile','products']})
+    async getAllUsers(query: PaginationDto): Promise<User[]> {
+        return await this.usersRepository.find({relations: ['profile','products'], skip: Number(query.skip),take: Number(query.take)})
     }
 
     // create user in db

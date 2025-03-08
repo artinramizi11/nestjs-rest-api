@@ -1,11 +1,9 @@
-import { Body, Controller, Delete, Get , Param, ParseIntPipe, Patch, Post, SetMetadata, UploadedFile, UseGuards, UseInterceptors } from '@nestjs/common';
+import { Body, Controller, Delete, Get , Param, ParseIntPipe, Patch, Post, Query, SetMetadata, UploadedFile, UseGuards, UseInterceptors } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { User } from 'src/entities/user.entity';
 import { CreateUserDto, createUserSchema } from 'src/zodSchema/create-user.schema';
 import { ZodValidationPipe } from 'src/zodValidation/zodValidation';
 import { JwtAuthGuard } from 'src/guards/jwt-auth.guard';
-import { OwnerShip } from 'src/auth/ownership.metadata';
-import { OwnerShipGuard } from 'src/guards/ownership.guard';
 import { Roles } from 'src/auth/roles';
 import { Role } from 'src/enums/role.enum';
 import { authorizationGuard } from 'src/guards/authorization.guard';
@@ -14,6 +12,7 @@ import { multerConfig } from 'src/config/multerconfig';
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { UserOwner } from 'src/guards/user-owner.guard';
+import { PaginationDto, paginationSchema } from 'src/zodSchema/pagination.schema';
 
 
 // This controller is protected by an authentication guard that verifies JWT tokens.  
@@ -26,18 +25,18 @@ export class UsersController {
         @InjectRepository(User) private usersRepository: Repository<User>
     ){}
 
-    // get all users
+    // get all users by using pagination with query Skip and Take
     @Get()
-    getUsers(){
-        return this.usersService.getAllUsers()
+    getUsers(@Query(new ZodValidationPipe(paginationSchema)) query: PaginationDto){
+        return this.usersService.getAllUsers(query)
     }
 
-    @Get(":id/:imageName")
-    @SetMetadata("public",true)
-    getUserImage(@Param() {id,imageName}: {id: string,imageName: string} ){
-        return {id,imageName}
+    @Get("test")
+    testing(){
+        return "Testing something out"
     }
 
+    // Only the owner user can upload the image on his user details
     @Post(":id/image")
     @UseGuards(UserOwner)
     @UseInterceptors(FileInterceptor("image", multerConfig))
@@ -62,8 +61,6 @@ export class UsersController {
 
     // Only the owner of user's can access to their own user
     @Get(":id")
-    @OwnerShip("id")
-    @UseGuards(OwnerShipGuard)
     findUser(@Param("id",ParseIntPipe) id: number ) {
         return this.usersService.findUserById(id)
 
@@ -71,16 +68,14 @@ export class UsersController {
 
     // delete user by id , only the owners can remove their own user
     @Delete(":id") 
-    @OwnerShip("id")
-    @UseGuards(OwnerShipGuard)
+    @UseGuards(UserOwner)
     deleteUser(@Param("id",ParseIntPipe) id: number){
         return this.usersService.removeUser(id)
     }
 
     // update user by id, only the owners can update their own user
     @Patch(':id')
-    @OwnerShip("id")
-    @UseGuards(OwnerShipGuard)
+    @UseGuards(UserOwner)
     updateUser(@Param("id",ParseIntPipe) id: number, @Body(new ZodValidationPipe(createUserSchema)) body: CreateUserDto){
         return this.usersService.updateUser(id,body)
     }

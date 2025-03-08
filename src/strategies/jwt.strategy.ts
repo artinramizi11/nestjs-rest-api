@@ -10,13 +10,12 @@ export class JwtStrategy extends PassportStrategy(Strategy, 'jwt') {
     ){
         super({
             jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
-            secretOrKey: configService.get<string>("SECRET_KEY") ?? "default_secret"
+            secretOrKey: configService.get<string>("SECRET_KEY") || "secret"
         })
     }
 
 
     async validate(payload: any) {
-
         return {sub: payload.sub, email: payload.email, role: payload.role}
     }
 

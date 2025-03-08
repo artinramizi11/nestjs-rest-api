@@ -2,7 +2,6 @@ import { Body, Controller, Delete, Get, Param, ParseIntPipe, Post, UseGuards, Va
 import { ProfilesService } from './profiles.service';
 import { createProfileDto, createProfileSchema } from 'src/zodSchema/create-profile.schema';
 import { ZodValidationPipe } from 'src/zodValidation/zodValidation';
-import { OwnerShipGuard } from 'src/guards/ownership.guard';
 import { JwtAuthGuard } from 'src/guards/jwt-auth.guard';
 
 
@@ -27,7 +26,6 @@ export class ProfilesController {
 
     // create new profile
     @Post()
-    @UseGuards(OwnerShipGuard)
     createProfile(@Body(new ZodValidationPipe(createProfileSchema)) body: createProfileDto) {
         return this.profileService.createProfile(body)
     }
