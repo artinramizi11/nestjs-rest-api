@@ -3,6 +3,7 @@ import { Strategy } from 'passport-local';
 import { PassportStrategy } from '@nestjs/passport';
 import { HttpException, HttpStatus, Injectable, UnauthorizedException } from '@nestjs/common';
 import { UsersService } from 'src/users/users.service';
+import { User } from 'src/entities/user.entity';
 
 // Just added 1 more authentification strategy to practice
 @Injectable()

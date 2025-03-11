@@ -4,6 +4,7 @@ import { Product } from 'src/entities/product.entity';
 import { User } from 'src/entities/user.entity';
 import { UsersService } from 'src/users/users.service';
 import { createProductDto } from 'src/zodSchema/create-product.schema';
+import { UpdateProductDto } from 'src/zodSchema/update-product.schema';
 import { Repository } from 'typeorm';
 
 @Injectable()
@@ -44,7 +45,7 @@ export class ProductsService {
     
     }
 
-    async updateProduct(updated) {
+    async updateProduct(updated: UpdateProductDto): Promise<Product> {
         const product = await this.productRepository.findOne({where: {user: {id: updated.userId}}})
         if(!product){
             throw new HttpException("You dont have any product on this user id", HttpStatus.NOT_FOUND)
@@ -53,7 +54,7 @@ export class ProductsService {
         return product
     }
 
-    async getProductById(id: number){
+    async getProductById(id: number): Promise<Product>{
         const product = await this.productRepository.findOne({where: {id},relations: ['user']})
         if(!product){
             throw new HttpException("No product found with this id",HttpStatus.NOT_FOUND)

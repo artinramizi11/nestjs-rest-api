@@ -14,8 +14,10 @@ import { JwtModule } from '@nestjs/jwt';
 import * as dotenv from "dotenv"
 import { UsersService } from './users/users.service';
 import { LocalStrategy } from './strategies/local.strategy';
-import { ConfigModule } from '@nestjs/config';
+import { ConfigModule, ConfigService } from '@nestjs/config';
 import configuration from './config/configuration';
+import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
+import { APP_GUARD } from '@nestjs/core';
 dotenv.config()
 
 @Module({
@@ -35,10 +37,21 @@ dotenv.config()
       secret: process.env.SECRET_KEY,
       signOptions: {expiresIn:"1h"}
       
+    }),
+    ThrottlerModule.forRootAsync({
+      imports: [ConfigModule],
+      inject: [ConfigService],
+      useFactory: (config: ConfigService) => [
+        {
+          ttl: config.get("THROTTLE_TTL") as number,
+          limit: config.get("THROTTLE_LIMIT") as number 
+        }
+      ]
+      
     })
   ],
   controllers: [AppController],
-  providers: [AppService,LocalStrategy,UsersService],
+  providers: [AppService,LocalStrategy,UsersService, {provide: APP_GUARD,useClass: ThrottlerGuard}],
 })
 export class AppModule {}
 

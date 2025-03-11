@@ -13,6 +13,8 @@ import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { UserOwner } from 'src/guards/user-owner.guard';
 import { PaginationDto, paginationSchema } from 'src/zodSchema/pagination.schema';
+import { UpdateUserDto, UpdateUserSchema } from 'src/zodSchema/update-user.schema';
+import { SkipThrottle, Throttle, ThrottlerGuard } from '@nestjs/throttler';
 
 
 // This controller is protected by an authentication guard that verifies JWT tokens.  
@@ -76,7 +78,7 @@ export class UsersController {
     // update user by id, only the owners can update their own user
     @Patch(':id')
     @UseGuards(UserOwner)
-    updateUser(@Param("id",ParseIntPipe) id: number, @Body(new ZodValidationPipe(createUserSchema)) body: CreateUserDto){
+    updateUser(@Param("id",ParseIntPipe) id: number, @Body(new ZodValidationPipe(UpdateUserSchema)) body: UpdateUserDto){
         return this.usersService.updateUser(id,body)
     }
 }

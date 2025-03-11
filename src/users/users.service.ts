@@ -3,6 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { User } from 'src/entities/user.entity';
 import { CreateUserDto } from 'src/zodSchema/create-user.schema';
 import { PaginationDto } from 'src/zodSchema/pagination.schema';
+import { UpdateUserDto } from 'src/zodSchema/update-user.schema';
 import { Repository } from 'typeorm';
 
 @Injectable()
@@ -50,12 +51,12 @@ export class UsersService {
     }
 
     // update user in db
-    async updateUser(id: number,updatedInfo: CreateUserDto): Promise<User | {message: string,user: User}>{
+    async updateUser(id: number,updatedInfo: UpdateUserDto): Promise<User | {message: string,user: User}>{
         const user = await this.usersRepository.findOne({where: {id}})
         if(!user){
             throw new NotFoundException()
         }
-        Object.assign(user,updatedInfo )
+        Object.assign(user,updatedInfo)
         await this.usersRepository.save(user)
         return {message: "Sucessfully updated the new user", user}
 

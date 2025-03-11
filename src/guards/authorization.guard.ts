@@ -1,6 +1,7 @@
 import { CanActivate, ExecutionContext, HttpException, HttpStatus, Injectable, UnauthorizedException } from "@nestjs/common";
 import { Reflector } from "@nestjs/core";
 import { Roles, roles_key } from "src/auth/roles";
+import { User } from "src/entities/user.entity";
 import { UsersService } from "src/users/users.service";
 
 

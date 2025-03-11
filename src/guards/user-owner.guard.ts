@@ -2,7 +2,7 @@ import { CanActivate, ExecutionContext, HttpException, HttpStatus, Injectable } 
 
 @Injectable()
 export class UserOwner implements CanActivate {
-    canActivate(context: ExecutionContext) {
+    canActivate(context: ExecutionContext): boolean {
         const request = context.switchToHttp().getRequest()
         const user = request.user
         const userId = request.params.id
