@@ -4,6 +4,7 @@ import { ZodValidationPipe } from 'src/zodValidation/zodValidation';
 import { AuthService } from './auth.service';
 import { UsersService } from 'src/users/users.service';
 import { AuthGuard } from '@nestjs/passport';
+import { JwtAuthGuard } from 'src/guards/jwt-auth.guard';
 
 @Controller('auth')
 export class AuthController {
@@ -21,8 +22,15 @@ export class AuthController {
 
     // Get access to your profile by using token
     @Get("profile")
-    @UseGuards(AuthGuard('jwt'))
+    @UseGuards(JwtAuthGuard)
     getProfile(@Req() request){
         return this.usersService.findUserById(request.user.sub)
+    }
+
+    @Post("refresh")
+    @UseGuards(AuthGuard("refresh-jwt"))
+    refreshToken(@Req() req){
+       return this.authService.refreshToken(req.user.id)
+        
     }
 }

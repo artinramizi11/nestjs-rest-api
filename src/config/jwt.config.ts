@@ -7,6 +7,6 @@ export const jwtConfig: JwtModuleAsyncOptions = {
     useFactory: (config: ConfigService) => ({
         global: true ,
         secret: config.get("SECRET_KEY"),
-        signOptions: {expiresIn: "1h"}
+        signOptions: {expiresIn: "30s"}
     })
 }

@@ -8,13 +8,12 @@ import { Roles } from 'src/auth/roles';
 import { Role } from 'src/enums/role.enum';
 import { authorizationGuard } from 'src/guards/authorization.guard';
 import { FileInterceptor } from '@nestjs/platform-express';
-import { multerConfig } from 'src/config/multerconfig';
-import { Like, Repository } from 'typeorm';
+import { multerConfig } from 'src/config/multer.config';
+import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { UserOwner } from 'src/guards/user-owner.guard';
 import { PaginationDto, paginationSchema } from 'src/zodSchema/pagination.schema';
 import { UpdateUserDto, UpdateUserSchema } from 'src/zodSchema/update-user.schema';
-import { SkipThrottle, Throttle, ThrottlerGuard } from '@nestjs/throttler';
 
 
 // This controller is protected by an authentication guard that verifies JWT tokens.  
@@ -45,7 +44,6 @@ export class UsersController {
 
     // Just a demo where we can use metadata so we dont need to access authorization where the logic is on auth guard
     @Get("demo-users")
-    @SetMetadata("public",true)
     getDemoUsers(){
         return {users: [{id: 1,user: "jonathan",age: 20},{id: 2,user: "emily",age: 30},{id: 3,user: "john",age: 26}]}
     }
@@ -60,6 +58,7 @@ export class UsersController {
 
     // Only the owner of user's can access to their own user
     @Get(":id")
+    @UseGuards(UserOwner)
     findUser(@Param("id",ParseIntPipe) id: number ) {
         return this.usersService.findUserById(id)
 

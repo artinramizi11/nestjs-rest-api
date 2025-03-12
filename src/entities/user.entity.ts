@@ -18,6 +18,9 @@ export class User {
     username: string
 
     @Column({nullable: true})
+    refreshToken: string
+
+    @Column({nullable: true})
     imageurl: string
 
     @OneToMany(() => Product, product => product.user , {cascade: true})
@@ -28,5 +31,6 @@ export class User {
 
     @Column({type: "enum",enum: Role,default: Role.User})
     role?: Role
+
     
 }
