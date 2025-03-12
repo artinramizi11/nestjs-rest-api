@@ -17,7 +17,8 @@ import { LocalStrategy } from './strategies/local.strategy';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import configuration from './config/configuration';
 import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
-import { APP_GUARD } from '@nestjs/core';
+import { APP_GUARD, APP_INTERCEPTOR } from '@nestjs/core';
+import { ResponseLogging } from './inteceptors/response-logging.interceptor';
 dotenv.config()
 
 @Module({
@@ -51,7 +52,7 @@ dotenv.config()
     })
   ],
   controllers: [AppController],
-  providers: [AppService,LocalStrategy,UsersService, {provide: APP_GUARD,useClass: ThrottlerGuard}],
+  providers: [AppService,LocalStrategy,UsersService, {provide: APP_GUARD,useClass: ThrottlerGuard}, {provide: APP_INTERCEPTOR,useClass: ResponseLogging}],
 })
 export class AppModule {}
 

@@ -9,7 +9,7 @@ import { Role } from 'src/enums/role.enum';
 import { authorizationGuard } from 'src/guards/authorization.guard';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { multerConfig } from 'src/config/multerconfig';
-import { Repository } from 'typeorm';
+import { Like, Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { UserOwner } from 'src/guards/user-owner.guard';
 import { PaginationDto, paginationSchema } from 'src/zodSchema/pagination.schema';
@@ -29,14 +29,11 @@ export class UsersController {
 
     // get all users by using pagination with query Skip and Take
     @Get()
-    getUsers(@Query(new ZodValidationPipe(paginationSchema)) query: PaginationDto){
-        return this.usersService.getAllUsers(query)
+   async getUsers(@Query(new ZodValidationPipe(paginationSchema)) query: PaginationDto){
+         return this.usersService.getAllUsers(query)
+        
     }
 
-    @Get("test")
-    testing(){
-        return "Testing something out"
-    }
 
     // Only the owner user can upload the image on his user details
     @Post(":id/image")
