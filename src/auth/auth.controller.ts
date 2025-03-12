@@ -33,4 +33,12 @@ export class AuthController {
        return this.authService.refreshToken(req.user.id)
         
     }
+
+    // when logging out the refresh token in database will get removed
+    @Post("logout")
+    @UseGuards(JwtAuthGuard)
+    SignOut(@Req() req){
+        return this.authService.logout(req.user.sub)
+    
+    }
 }

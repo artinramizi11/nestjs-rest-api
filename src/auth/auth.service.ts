@@ -49,4 +49,8 @@ export class AuthService {
                 token
             }
     }   
+
+    async logout(userId: number){
+      await this.usersRepository.update({id: userId},{refreshToken: null as any})
+    }
 }

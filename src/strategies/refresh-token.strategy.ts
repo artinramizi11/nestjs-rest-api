@@ -21,11 +21,10 @@ export class RefreshJwtStrategy extends PassportStrategy(Strategy, "refresh-jwt"
             jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
             secretOrKey: configService.get("REFRESH_SECRET_KEY") as string,
             ignoreExpiration: false,
-            passReqToCallback: true
+            passReqToCallback: true //This lets us to access the request in validate function so we can get the refresh token
         })
     }
     async validate(request: Request,payload: any) {
-        console.log(payload)
         const authHeader = request.headers['authorization']
 
         if (!authHeader || !authHeader.startsWith("Bearer ")) {
@@ -33,9 +32,13 @@ export class RefreshJwtStrategy extends PassportStrategy(Strategy, "refresh-jwt"
         }
         const [bearer,refreshtoken] = authHeader.split(" ")
 
-        const user: User = await this.usersService.findUserById(payload.sub)
+        // we check if we have user with this id in our database
+        const user = await this.usersService.findUserById(payload.sub)
+
+        // we verify the refresh token in database with the one in authorization header
         const hasRefreshedToken = await argon2.verify(user.refreshToken,refreshtoken)
   
+        // if we have the same token in headers with the one in database then we return that user 
         if(hasRefreshedToken){
             return {
                 id: user.id,
