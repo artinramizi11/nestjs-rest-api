@@ -19,6 +19,7 @@ import configuration from './config/configuration';
 import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
 import { APP_GUARD, APP_INTERCEPTOR } from '@nestjs/core';
 import { ResponseLogging } from './inteceptors/response-logging.interceptor';
+import { jwtConfig } from './config/jwt.config';
 dotenv.config()
 
 @Module({
@@ -33,12 +34,7 @@ dotenv.config()
     ProductsModule,
     ProfilesModule,
     AuthModule,
-    JwtModule.register({
-      global: true,
-      secret: process.env.SECRET_KEY,
-      signOptions: {expiresIn:"1h"}
-      
-    }),
+    JwtModule.registerAsync(jwtConfig),
     ThrottlerModule.forRootAsync({
       imports: [ConfigModule],
       inject: [ConfigService],
