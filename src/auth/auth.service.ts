@@ -5,8 +5,10 @@ import { User } from 'src/entities/user.entity';
 import { signInDto } from 'src/zodSchema/sign-in.schema';
 import { Repository } from 'typeorm';
 import * as dotenv from "dotenv"
+import * as argon2 from "argon2"
 import { ConfigService } from '@nestjs/config';
 dotenv.config()
+
 
 @Injectable()
 export class AuthService {
@@ -25,6 +27,8 @@ export class AuthService {
         }
         const token = await this.jwtService.signAsync({sub: userExists?.id, email: userExists?.email, role: userExists?.email},{secret: this.configService.get("SECRET_KEY")})
         const refreshToken = await this.jwtService.signAsync({sub: userExists?.id, email: userExists?.email, userExists: user?.email}, {secret: this.configService.get("REFRESH_SECRET_KEY"),expiresIn: this.configService.get("REFRESH_EXPIRE_TIME")})
+        const hashedRefreshToken = await argon2.hash(refreshToken)
+       await this.usersRepository.update(user,{refreshToken: hashedRefreshToken})
 
         return {
             token,
