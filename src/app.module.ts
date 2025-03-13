@@ -17,9 +17,10 @@ import { LocalStrategy } from './strategies/local.strategy';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import configuration from './config/configuration';
 import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
-import { APP_GUARD, APP_INTERCEPTOR } from '@nestjs/core';
+import { APP_FILTER, APP_GUARD, APP_INTERCEPTOR } from '@nestjs/core';
 import { ResponseLogging } from './inteceptors/response-logging.interceptor';
 import { jwtConfig } from './config/jwt.config';
+import { HttpExceptionFilter } from './exceptions/http-filter.exception';
 dotenv.config()
 
 @Module({
@@ -48,7 +49,10 @@ dotenv.config()
     })
   ],
   controllers: [AppController],
-  providers: [AppService,LocalStrategy,UsersService, {provide: APP_GUARD,useClass: ThrottlerGuard}, {provide: APP_INTERCEPTOR,useClass: ResponseLogging}],
+  providers: [AppService,LocalStrategy,UsersService, 
+    {provide: APP_GUARD,useClass: ThrottlerGuard}, 
+    {provide: APP_INTERCEPTOR,useClass: ResponseLogging},
+    {provide: APP_FILTER, useClass: HttpExceptionFilter}],
 })
 export class AppModule {}
 

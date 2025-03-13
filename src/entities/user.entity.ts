@@ -23,10 +23,10 @@ export class User {
     @Column({nullable: true})
     imageurl: string
 
-    @OneToMany(() => Product, product => product.user , {cascade: true})
+    @OneToMany(() => Product, product => product.user , {cascade: true,eager: true})
     products: Product[]
 
-    @OneToOne(() => Profile, profile => profile.user , {cascade: true})
+    @OneToOne(() => Profile, profile => profile.user , {cascade: true,eager: true})
     profile: Profile
 
     @Column({type: "enum",enum: Role,default: Role.User})

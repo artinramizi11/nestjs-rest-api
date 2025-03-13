@@ -14,7 +14,7 @@ export class UserOwner implements CanActivate {
             return true
         }
 
-        throw new HttpException("You are not owner of this user to upload image", HttpStatus.UNAUTHORIZED)
+        throw new HttpException("No permissions to do this action", HttpStatus.UNAUTHORIZED)
         
        
     }

@@ -36,8 +36,6 @@ export class AuthService {
         }
     }
 
-
-
     async refreshToken(userId: number){
             const user = await this.usersRepository.findOne({where: {id: userId}})
             if(!user){

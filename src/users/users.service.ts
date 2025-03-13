@@ -15,9 +15,8 @@ export class UsersService {
 
     // get all users from db
     async getAllUsers(query: PaginationDto): Promise<User[]> {
-        return await this.usersRepository.find({relations: ['profile','products'], skip: Number(query.skip),take: Number(query.take)})
+        return await this.usersRepository.find({skip: Number(query.skip),take: Number(query.take)})
     }
-
     // create user in db
     async createUser(createUser: CreateUserDto): Promise<User | {message: string}>{
         try {
@@ -51,7 +50,7 @@ export class UsersService {
     }
 
     // update user in db
-    async updateUser(id: number,updatedInfo: UpdateUserDto): Promise<User | {message: string,user: User}>{
+    async updateUser(id: number,updatedInfo: UpdateUserDto): Promise<{message: string, user: User}>{
         const user = await this.usersRepository.findOne({where: {id}})
         if(!user){
             throw new NotFoundException()
@@ -62,7 +61,7 @@ export class UsersService {
 
     }
 
-    async validateUser(email: string,password: string){
+    async validateUser(email: string,password: string): Promise<User>{
         const user = await this.usersRepository.findOne({where: {email}})
 
         if(user) {
@@ -75,7 +74,7 @@ export class UsersService {
 
     }
 
-    async uploadUserImage(userId: number, file: Express.Multer.File){
+    async uploadUserImage(userId: number, file: Express.Multer.File): Promise<{message: string}>{
         const user = await this.findUserById(userId)
  const imageurl = file?.originalname;
 
