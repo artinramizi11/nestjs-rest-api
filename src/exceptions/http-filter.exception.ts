@@ -13,8 +13,7 @@ export class HttpExceptionFilter implements ExceptionFilter {
             message,
             timestamp: new Date().toLocaleString(),
             path: request.url
-            
-
+        
         })
     }
 }

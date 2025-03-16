@@ -49,6 +49,16 @@ export class AuthService {
     }   
 
     async logout(userId: number){
-      await this.usersRepository.update({id: userId},{refreshToken: null as any})
+        const user = await this.usersRepository.findOne({where: {id: userId}})
+        if(!user) {
+            throw new UnauthorizedException()
+        }
+        if(user.refreshToken) {
+            await this.usersRepository.update({id: userId},{refreshToken: null as any})
+            return {userLogged: user.username}
+        }
+
+        throw new UnauthorizedException()
+      
     }
 }

@@ -17,7 +17,6 @@ import { UpdateUserDto, UpdateUserSchema } from 'src/zodSchema/update-user.schem
 
 
 // This controller is protected by an authentication guard that verifies JWT tokens.  
-// Once the JWT token is validated, the authorizationGuard checks if the user role includes the Role.Admin to acess the route
 @UseGuards(JwtAuthGuard)
 @Controller('users')
 export class UsersController {
@@ -44,11 +43,12 @@ export class UsersController {
 
     // Just a demo where we can use metadata so we dont need to access authorization where the logic is on auth guard
     @Get("demo-users")
+    @SetMetadata("public",true)
     getDemoUsers(){
         return {users: [{id: 1,user: "jonathan",age: 20},{id: 2,user: "emily",age: 30},{id: 3,user: "john",age: 26}]}
     }
 
-    // create new user
+    // create new user (only the admin's can create new users)
     @Post()
     @Roles(Role.Admin)
     @UseGuards(authorizationGuard)

@@ -14,13 +14,6 @@ export class AuthController {
     
     ){}
 
-    @Get("test")
-    @UseFilters()
-    test(){
-        throw new HttpException("Something went wrong",HttpStatus.UNAUTHORIZED)
-        
-    }
-
     // Login in existing account in database to get your token
     @Post("login")
     login(@Body(new ZodValidationPipe(signInSchema)) body: signInDto){
