@@ -25,6 +25,7 @@ export class RefreshJwtStrategy extends PassportStrategy(Strategy, "refresh-jwt"
         })
     }
     async validate(request: Request,payload: any) {
+        console.log(payload)
         const authHeader = request.headers['authorization']
 
         if (!authHeader || !authHeader.startsWith("Bearer ")) {

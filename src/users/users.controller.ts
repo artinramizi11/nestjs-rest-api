@@ -14,6 +14,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { UserOwner } from 'src/guards/user-owner.guard';
 import { PaginationDto, paginationSchema } from 'src/zodSchema/pagination.schema';
 import { UpdateUserDto, UpdateUserSchema } from 'src/zodSchema/update-user.schema';
+import { PublicHandler } from 'src/PublicHandler.decorator';
 
 
 // This controller is protected by an authentication guard that verifies JWT tokens.  
@@ -43,7 +44,7 @@ export class UsersController {
 
     // Just a demo where we can use metadata so we dont need to access authorization where the logic is on auth guard
     @Get("demo-users")
-    @SetMetadata("public",true)
+    @PublicHandler()
     getDemoUsers(){
         return {users: [{id: 1,user: "jonathan",age: 20},{id: 2,user: "emily",age: 30},{id: 3,user: "john",age: 26}]}
     }
