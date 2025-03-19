@@ -10,3 +10,4 @@ export const createUserSchema = z.object({
 
 // We create a dto type from zod schema
 export type CreateUserDto = z.infer<typeof createUserSchema>;
+    

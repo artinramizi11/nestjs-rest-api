@@ -1,8 +1,7 @@
-import { Module} from '@nestjs/common';
+import { Global, Module} from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { connectDb } from './connectDb';
 import { User } from './entities/user.entity';
 import { Product } from './entities/product.entity';
 import { Profile } from './entities/profile.entity';
@@ -21,11 +20,12 @@ import { APP_FILTER, APP_GUARD, APP_INTERCEPTOR } from '@nestjs/core';
 import { ResponseLogging } from './inteceptors/response-logging.interceptor';
 import { jwtConfig } from './config/jwt.config';
 import { HttpExceptionFilter } from './exceptions/http-filter.exception';
+import { dbDataSource } from './db/data-source';
 dotenv.config()
 
 @Module({
   imports: [
-    TypeOrmModule.forRoot(connectDb),
+    TypeOrmModule.forRoot(dbDataSource),
     TypeOrmModule.forFeature([User, Product, Profile]),
     ConfigModule.forRoot({
       isGlobal: true,
@@ -49,7 +49,7 @@ dotenv.config()
     })
   ],
   controllers: [AppController],
-  providers: [AppService,LocalStrategy,UsersService, 
+  providers: [AppService,LocalStrategy,UsersService,
     {provide: APP_GUARD,useClass: ThrottlerGuard}, 
     {provide: APP_INTERCEPTOR,useClass: ResponseLogging},
     {provide: APP_FILTER, useClass: HttpExceptionFilter}],

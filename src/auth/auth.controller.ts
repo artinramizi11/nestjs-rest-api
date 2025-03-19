@@ -5,6 +5,8 @@ import { AuthService } from './auth.service';
 import { UsersService } from 'src/users/users.service';
 import { AuthGuard } from '@nestjs/passport';
 import { JwtAuthGuard } from 'src/guards/jwt-auth.guard';
+import { PublicHandler } from 'src/PublicHandler.decorator';
+import { CreateUserDto, createUserSchema } from 'src/zodSchema/create-user.schema';
 
 @Controller('auth')
 export class AuthController {
@@ -18,6 +20,12 @@ export class AuthController {
     @Post("login")
     login(@Body(new ZodValidationPipe(signInSchema)) body: signInDto){
         return this.authService.signIn(body)
+    }
+
+    @PublicHandler()
+    @Post("register")
+    register(@Body(new ZodValidationPipe(createUserSchema)) registerUser: CreateUserDto ){
+        return registerUser
     }
 
     // Get access to your profile by using token
